@@ -7,7 +7,9 @@ import java.util.*;
  */
 public class Roulette extends Game{
 
-    // Initializing hashmap to create roulette table
+    /**
+     * Initializing hashmap to create roulette table
+     */
     Random rand = new Random();
     static HashMap<Integer, String> hashMap = new HashMap<>();
     public enum Command{
@@ -62,56 +64,67 @@ public class Roulette extends Game{
 
     }
 
-// Initializing fields
-
+    /**
+     * Initializing fields
+     */
     private int winningNumber;
-
-    private Player player;
 
     ArrayList<Integer> bets = new ArrayList<>();
 
-// Sets a randomly generated winning number (0-36)
-
+    /**
+     * Sets a randomly generated winning number (0-36)
+     */
     public void setWinningNumber(){
         this.winningNumber =rand.nextInt(37);
     }
 
-// Returns the winning number
-
+    /**
+     * Returns the winning number
+     * @return
+     */
     public int getWinningNumber(){
         return winningNumber;
     }
 
-// Returns the bets array lists
 
+    public void setBets(ArrayList<Integer> bets){
+        this.bets = bets;
+    }
     public ArrayList<Integer> getBets(){
         return bets;
     }
 
-// Stores a straight bet (single number)
-
+    /**
+     * Stores a straight bet (single number)
+     * @param number
+     */
     public void betStraight(int number){
         bets.add(number);
     }
 
-// Stores an even bet
-
+    /**
+     * Stores an even bet
+     */
     public void betEven(){
         for(int i=2; i <= 36; i= i+2){
             betStraight(i);
         }
     }
 
-// Stores an odd bet
-
+    /**
+     * Stores an odd bet
+     */
     public void betOdd(){
         for(int i=1; i <= 36; i= i+2){
             betStraight(i);
         }
     }
 
-// Stores a color bet
-
+    /**
+     * Stores a color bet
+     * @param player
+     * @param color
+     */
     public void betColor(Player player, String color){
             player.setBetColor(color);
     }
@@ -141,6 +154,31 @@ public class Roulette extends Game{
         return playerWins;
     }
 
+//    public boolean askForInput(Player player, Scanner scanner, String input){
+//        input = scanner.nextLine();
+//        return CLI(player, input);
+//    }
+
+    public int printGameResults(Player player){
+        setWinningNumber();
+        if(determineWinner(player)){
+            System.out.println("\nYou Won! #gettingpunchedintheface");
+            player.setCash(player.getCash()+payOut());
+
+        }else{
+            System.out.println("Bad Luck!\n");
+        }
+        System.out.println("you now have "+player.getCash()+" in cash");
+        return player.getCash();
+    }
+
+    public ArrayList<Integer> resetGame(Player player){
+        ArrayList<Integer> clearBets = new ArrayList<>();
+        player.setBets(clearBets);
+        setBets(clearBets);
+        return clearBets;
+    }
+
     public void engine(Player player){
 
         Scanner scanner = new Scanner(System.in);
@@ -152,28 +190,16 @@ public class Roulette extends Game{
             String input = "";
             boolean commandWork = false;
             do{
-                player.setBets(null);
-                input = scanner.nextLine();
+                input = scanner.next();
                 commandWork = CLI(player, input);
             }while(!commandWork);
-            String output = Arrays.asList(player.getBets()).toString();
-            //System.out.println(player.getName()+" bet "+input+" on: \n"+output.substring(2,output.length()-2));
-            setWinningNumber();
-            if(determineWinner(player)){
-                System.out.println("\nYou Won! #gettingpunchedintheface");
-                player.setCash(player.getCash()+payOut());
+           printGameResults(player);
 
-            }else{
-                System.out.println("Bad Luck!\n");
-
-
-            }
-            System.out.println("you now have "+player.getCash()+" in cash");
             System.out.println("\nwould you like to play again? \n" + " type any key and ENTER to continue...\n" + "\n" + " otherwise, type N\n");
             input = scanner.nextLine();
+            resetGame(player);
             if(input.equalsIgnoreCase("n")) loop = false;
         }while(loop);
-
     }
 
     public boolean CLI(Player player, String input){
@@ -195,32 +221,34 @@ public class Roulette extends Game{
                     }else {
                         this.betStraight(Integer.parseInt(inputs[1]));
                         player.setBets(this.getBets());
-                        this.setBetStore(player.placeBet(Integer.parseInt(inputs[2])));
+                        this.setAmountBet(player.placeBet(Integer.parseInt(inputs[2])));
+                        player.setBetType(Player.Choice.NUMBER);
                         didCommandWork = true;
                     }
                     break;
                 case EVEN:
                     this.betEven();
                     player.setBets(this.getBets());
-                    this.setBetStore(player.placeBet(Integer.parseInt(inputs[1])));
-
+                    this.setAmountBet(player.placeBet(Integer.parseInt(inputs[1])));
+                    player.setBetType(Player.Choice.NUMBER);
                     didCommandWork = true;
                     break;
                 case ODD:
                     this.betOdd();
                     player.setBets(this.getBets());
-                    this.setBetStore(player.placeBet(Integer.parseInt(inputs[1])));
+                    this.setAmountBet(player.placeBet(Integer.parseInt(inputs[1])));
+                    player.setBetType(Player.Choice.NUMBER);
                     didCommandWork = true;
                     break;
                 case RED:
                     this.betColor(player, comm.toString().toUpperCase());
-                    this.setBetStore(player.placeBet(Integer.parseInt(inputs[1])));
+                    this.setAmountBet(player.placeBet(Integer.parseInt(inputs[1])));
                     player.setBetType(Player.Choice.COLOR);
                     didCommandWork = true;
                     break;
                 case BLACK:
                     this.betColor(player, comm.toString().toUpperCase());
-                    this.setBetStore(player.placeBet(Integer.parseInt(inputs[1])));
+                    this.setAmountBet(player.placeBet(Integer.parseInt(inputs[1])));
                     player.setBetType(Player.Choice.COLOR);
                     didCommandWork = true;
                     break;
@@ -236,15 +264,4 @@ public class Roulette extends Game{
         }
         return didCommandWork;
     }
-
-
-    public static void main(String[] args) {
-        Roulette roulette = new Roulette();
-        Player randy = new Player("RandyDandy", 500);
-        roulette.engine(randy);
-    }
-
-
-
-
 }

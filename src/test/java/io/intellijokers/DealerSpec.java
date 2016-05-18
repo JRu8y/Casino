@@ -2,48 +2,37 @@ package io.intellijokers;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
-/**
- * Created by alejandrolondono on 5/11/16.
- */
+import static org.hamcrest.CoreMatchers.*;
+
 public class DealerSpec {
 
     Dealer dealer;
     Deck deck;
     Player player;
-//    AI ai;
     String name;
-    int ammount;
+
+    int amount;
+
     @Before
     public void Sandbox(){
         name = "Dandy Randy";
         dealer = new Dealer();
         deck = new Deck();
-        player = new Player(name, ammount);
+        player = new Player(name);
 //        ai = new AI();
     }
 
+
     @Test
-    public void setGetDeck(){
-        dealer.setDeck(deck);
-        Deck actualDeck = dealer.getDeck();
-        assertEquals("deck should have been passed and returned", deck, actualDeck);
+    public void dealCardTest(){
+        Card testCard = dealer.dealCard();
+        String expected = "[2"+Card.Suits.SPADES.suitIcon+"]";
+        String actual = testCard.getCardDisplay();
+        assertEquals(expected,actual);
     }
 
-//    @Test
-//    public void drawFromDeckToPlayerTest(){
-//
-//
-//
-//    }
-//
-//    @Test
-//    public void drawFromDeckToSelfTest(){
-//
-//    }
-//
-//    @Test
-//    public void drawFromDeckToAITest(){
-//
-//    }
 }

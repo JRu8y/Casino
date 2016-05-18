@@ -1,49 +1,52 @@
 package io.intellijokers;
 
-import java.util.ArrayList;
+abstract class Game {
+    public Player currentPlayer;
+    private int round = 0;
+    private int amountBet = 0;
 
-public class Game {
+    UserInputHandler prompt = new UserInputHandler();
+    Dealer dealer = new Dealer();
 
-    //Change String in ArrayList to Player
-    public ArrayList<String> currentPlayers = new ArrayList<String>();
-    
-    private int stage = 0;
-    private int betStore = 0;
-
-    public int getBetStore() {
-        return betStore;
+    /**
+     * Resets the bet back to zero.
+     */
+    public void resetBet(){
+        this.amountBet = 0;
     }
 
-    public void setBetStore(int betStore) {
-        this.betStore = betStore;
+    /**
+     * Returns the current amount bet, used by the payout methods
+     * @return
+     */
+    public int getAmountBet() {
+        return amountBet;
     }
 
-
-    public int getStage() {
-        return stage;
-    }
-
-    public void setStage(int stage) {
-        this.stage = stage;
-    }
-
-    public void setCurrentPlayers(String name) {
-        currentPlayers.add(name);
-    }
-
-    public int bet(int wager) {
-        return wager;
+    /**
+     * Sets the amount the player bet.
+     * @param amountBet
+     */
+    public void setAmountBet(int amountBet) {
+        this.amountBet = amountBet;
     }
 
     public int payOut(int odds) {
-        return odds*getBetStore();
+        return odds*getAmountBet();
     }
 
     public int payOut(){
-       return payOut(2);
+        return payOut(2);
     }
 
-    //Add abstract when you get the chance
-    public void determineWinner() {
+
+    public void payout(int odds, Player player) {
+        int earnings = getAmountBet() * odds;
+        resetBet();
+        player.setCash( player.getCash() + earnings);
+    }
+    
+    public void increaseBet(int amountBet) {
+        this.amountBet += amountBet;
     }
 }
