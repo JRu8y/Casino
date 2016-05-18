@@ -48,7 +48,7 @@ public class HorseRace extends Game{
     public void adjustOdds(){
         Arrays.sort(horses, (o1, o2) -> o1.getOdds() - o2.getOdds());
 
-        int oddsDifference = horses[0].getOdds() - 1;
+        int oddsDifference = horses[0].getOdds() - 2;
         for (int i = 0; i < horses.length; i++) {
             horses[i].setOdds(horses[i].getOdds() - oddsDifference);
         }
@@ -138,10 +138,12 @@ public class HorseRace extends Game{
     }
 
     public void startRace(Player player){
+        currentPlayer = player;
         loadHorses();
         adjustOdds();
 
         displayHorsesToBetOn();
+
         String horseName = getHorseName();
         while( !approveHorseName(horseName) ) {
             horseName = getHorseName();
@@ -157,9 +159,9 @@ public class HorseRace extends Game{
 
         if(checkForWinningBet(horseName)){
             player.setCash(player.getCash() + payOut(horses[9].getOdds()));
-            System.out.println("You now have: " + player.getCash());
+            System.out.println("You now have: " + player.getCash() + "\n");
         }else{
-            System.out.println("Thank you for your money.");
+            System.out.println("Thank you for your money.\n");
         }
     }
 }
